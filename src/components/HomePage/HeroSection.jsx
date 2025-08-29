@@ -127,9 +127,9 @@ function VerticalCarousel({ images = [] }) {
 /* ---------- HERO ---------- */
 export default function Hero({
   images = [
-    "/home.png",
-    "/home.png",
-    "/home.png",
+    "/home-1.png",
+    "/home-2.png",
+    "/home-3.png",
   ],
   videoSrc = "/video/hero.mp4",
 }) {

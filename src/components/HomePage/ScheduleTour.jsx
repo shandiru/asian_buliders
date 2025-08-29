@@ -92,7 +92,7 @@ export default function ScheduleTour({
             className={["prehide anim", inView ? "left-enter d100" : "left-exit"].join(" ")}
           >
             <img
-              src={imageSrc}
+              src="home-2.png"
               alt="Schedule tour preview"
               className="w-full h-auto rounded-2xl object-cover shadow-xl"
               loading="lazy"

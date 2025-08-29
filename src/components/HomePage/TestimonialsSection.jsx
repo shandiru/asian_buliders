@@ -159,7 +159,7 @@ export default function TestimonialsSection({
             {/* Video preview */}
             <div className="mt-12 rounded-2xl overflow-hidden bg-slate-100 relative">
               <img
-                src={videoThumb || "testleft.png"}
+                src="home-2.png"
                 alt="Testimonial video"
                 className="w-full h-auto object-cover"
               />

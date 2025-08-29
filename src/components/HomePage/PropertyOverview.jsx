@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
  * Right: badge, headline, text, CTA (with scroll animations)
  */
 export default function PropertyOverview({
-  img = "/assets/img/all-images/property/property-img5.png",
+  img = "/home-2.png",
   badge = "Property Overview",
   title = "Elegance Every Detail\nWelcome Suite Villa",
   para1 = "Experience the pinnacle of luxury living at our exclusive property, where every detail has been meticulously crafted to provide an unparalleled retreat. Nestled in the heart of, this haven offers.",
