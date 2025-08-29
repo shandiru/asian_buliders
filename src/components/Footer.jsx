@@ -29,13 +29,13 @@ function BrandDot() {
  *  - galleryImages?: string[4]
  */
 export default function Footer({
-  backgroundSrc = "/assets/img/all-images/hero/hero-img1.png", // <- put your bg image here or pass as prop
+  backgroundSrc = "/footerbg.png", // <- put your bg image here or pass as prop
   logoSrc,
   galleryImages = [
-    "/assets/img/all-images/others/others-img7.png",
-    "/assets/img/all-images/others/others-img8.png",
-    "/assets/img/all-images/others/others-img9.png",
-    "/assets/img/all-images/others/others-img10.png",
+    "/footer-image-1.png",
+    "/footer-image-2.png",
+    "/footer-image-3.png",
+    "/footer-image-4.png",
   ],
 }) {
   const handleSubmit = (e) => {
