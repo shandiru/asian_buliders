@@ -75,7 +75,7 @@ function YearsCard({ years = 25, avatarSrcs = ["/a1.jpg", "/a2.jpg", "/a3.jpg"] 
 function VideoCard({ thumbnail = "/video-thumb.jpg", href = "#" }) {
   return (
     <a href={href} className="group block relative rounded-2xl overflow-hidden">
-      <img src={thumbnail} alt="Video preview" className="h-full w-full object-cover" />
+      <img src="home-2.png" alt="Video preview" className="h-full w-full object-cover" />
       <span className="absolute left-4 bottom-4 inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-900 text-white shadow-lg group-hover:scale-105 transition">
         <FaPlay className="w-4 h-4" />
       </span>
@@ -90,17 +90,17 @@ export default function BestPropertiesSection({
   title = ["Explore Our Premier Of", "Single Property Retreat"],
 
   // Mini carousels (left top)
-  leftCarouselA = ["/p1.jpg", "/p2.jpg", "/p3.jpg"],
-  leftCarouselB = ["/p4.jpg", "/p5.jpg", "/p6.jpg"],
+  leftCarouselA = ["/home-2.png", "/home-1.png", "/home-3.png"],
+  leftCarouselB = ["/home-2.png", "/home-1.png", "/home-3.png"],
 
   // Stat + video images (left bottom)
   years = 25,
-  avatars = ["/avatar1.jpg", "/avatar2.jpg", "/avatar3.jpg"],
-  videoThumb = "/p7.jpg",
+  avatars = ["/avar.png", "/avar.png", "/avar.png"],
+  videoThumb = "/avar.png",
   videoHref = "https://www.youtube.com/watch?v=Y8XpQpW5OVY",
 
   // Featured property (right)
-  featuredImg = "/p8.jpg",
+  featuredImg = "/home-2.png",
   featuredTitle = "Luxury Suite Villa",
   featuredBeds = 2,
   featuredBaths = 2,

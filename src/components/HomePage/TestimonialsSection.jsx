@@ -10,7 +10,7 @@ const DEFAULT_ITEMS = [
   {
     name: "Alexy Queen",
     role: "Happy Client",
-    avatar: "/testimonials/t1.png",
+    avatar: "/avar.png",
     title: "Highly recommend Suite Luxury Suite Villa!",
     text:
       "“After staying at Luxury, I can confidently say it was one of the most luxurious best experiences of luxury villa.”",
@@ -19,7 +19,7 @@ const DEFAULT_ITEMS = [
   {
     name: "Jofra Archer",
     role: "Happy Client",
-    avatar: "/testimonials/t2.png",
+    avatar: "/avar.png",
     title: "Unforgettable Experience Of Luxury & Comfort!",
     text:
       "“Celebrated my anniversary at Property Villa, and it was beyond magical. The attention to detail, the of serene.”",
