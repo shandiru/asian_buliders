@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// src/components/BestPropertiesSection.jsx
+import React, { useEffect, useRef, useState } from "react";
 import {
   HiMiniChevronLeft,
   HiMiniChevronRight,
@@ -7,23 +8,11 @@ import {
 import { LuBedDouble, LuBath, LuSquare } from "react-icons/lu";
 import { FaPlay } from "react-icons/fa6";
 
-/** Brand palette tuned to your screenshot */
-const THEME = {
-  accent: "bg-emerald-900",          // dark green
-  accentText: "text-emerald-900",
-  coin: "#E7C873",                    // gold
-  cardBorder: "border-slate-200",
-  text: "text-slate-900",
-  muted: "text-slate-600",
-};
-
-/* ---------- Small image carousel (no external library) ---------- */
+/** ---------- Small image carousel (unchanged structure) ---------- */
 function MiniCarousel({ images = [], start = 0, ariaLabel = "carousel" }) {
-  const [idx, setIdx] = useState(start % (images.length || 1));
-  const prev = () =>
-    setIdx((p) => (p - 1 + images.length) % images.length);
+  const [idx, setIdx] = useState(images.length ? start % images.length : 0);
+  const prev = () => setIdx((p) => (p - 1 + images.length) % images.length);
   const next = () => setIdx((p) => (p + 1) % images.length);
-
   if (!images.length) return null;
 
   return (
@@ -36,7 +25,6 @@ function MiniCarousel({ images = [], start = 0, ariaLabel = "carousel" }) {
         />
       </div>
 
-      {/* Left / Right circular nav */}
       <button
         aria-label="Previous"
         onClick={prev}
@@ -55,19 +43,12 @@ function MiniCarousel({ images = [], start = 0, ariaLabel = "carousel" }) {
   );
 }
 
-/* ---------- “25+ Years” stat card ---------- */
-function YearsCard({
-  years = 25,
-  avatarSrcs = ["/a1.jpg", "/a2.jpg", "/a3.jpg"],
-}) {
+/** ---------- “25+ Years” stat card (unchanged structure) ---------- */
+function YearsCard({ years = 25, avatarSrcs = ["/a1.jpg", "/a2.jpg", "/a3.jpg"] }) {
   return (
     <div className="rounded-2xl bg-[#E7C873]/30 p-6 sm:p-7">
-      <div className="text-4xl font-extrabold text-slate-900">
-        {years}+
-      </div>
-      <p className="mt-2 text-sm font-medium text-slate-700">
-        Years Of Experience
-      </p>
+      <div className="text-4xl font-extrabold text-slate-900">{years}+</div>
+      <p className="mt-2 text-sm font-medium text-slate-700">Years Of Experience</p>
 
       <div className="mt-4 flex items-center gap-2">
         <div className="flex -space-x-2">
@@ -80,7 +61,6 @@ function YearsCard({
             />
           ))}
         </div>
-
         <div className="ml-3 flex items-center justify-center h-9 w-9 rounded-full bg-white text-slate-900 ring-1 ring-slate-200">
           +
         </div>
@@ -91,15 +71,11 @@ function YearsCard({
   );
 }
 
-/* ---------- Video thumbnail card ---------- */
+/** ---------- Video thumbnail card (unchanged structure) ---------- */
 function VideoCard({ thumbnail = "/video-thumb.jpg", href = "#" }) {
   return (
     <a href={href} className="group block relative rounded-2xl overflow-hidden">
-      <img
-        src={thumbnail}
-        alt="Video preview"
-        className="h-full w-full object-cover"
-      />
+      <img src={thumbnail} alt="Video preview" className="h-full w-full object-cover" />
       <span className="absolute left-4 bottom-4 inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-900 text-white shadow-lg group-hover:scale-105 transition">
         <FaPlay className="w-4 h-4" />
       </span>
@@ -107,7 +83,7 @@ function VideoCard({ thumbnail = "/video-thumb.jpg", href = "#" }) {
   );
 }
 
-/* ---------- Main component ---------- */
+/** ---------- Main component (positions unchanged; only slow animations added) ---------- */
 export default function BestPropertiesSection({
   // Headings
   badge = "OUR BEST PROPERTIES",
@@ -132,11 +108,46 @@ export default function BestPropertiesSection({
   featuredHref = "#",
   swirlSvg = null, // optional overlay asset
 }) {
+  const rootRef = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  // Observe when section enters/leaves viewport (no layout changes)
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.25 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <section className="bg-white py-12 sm:py-16">
+    <section ref={rootRef} className="bg-white py-12 sm:py-16 relative overflow-hidden">
+      {/* Slow, soft keyframes (no Tailwind config needed) */}
+      <style>{`
+        @keyframes fadeUpSlow {
+          0%   { opacity: 0; transform: translateY(64px) }
+          100% { opacity: 1; transform: translateY(0) }
+        }
+        @keyframes slideRightSlow {
+          0%   { opacity: 0; transform: translateX(80px) }
+          100% { opacity: 1; transform: translateX(0) }
+        }
+        @keyframes popSlow {
+          0%   { opacity: 0; transform: translateY(36px) scale(.97) }
+          100% { opacity: 1; transform: translateY(0) scale(1) }
+        }
+        .anim-fade-up   { animation: fadeUpSlow 2.2s cubic-bezier(.2,.8,.2,1) forwards }
+        .anim-slide-r   { animation: slideRightSlow 2.2s cubic-bezier(.2,.8,.2,1) forwards }
+        .anim-pop       { animation: popSlow 2.1s cubic-bezier(.2,.8,.2,1) forwards }
+        .pre-hide       { opacity: 0; transform: translateY(40px) } /* prevents initial flash */
+      `}</style>
+
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        {/* Header */}
-        <div className="text-center mb-10 sm:mb-12">
+        {/* Header (unchanged structure) */}
+        <div className={`text-center mb-10 sm:mb-12 ${inView ? "anim-fade-up" : "pre-hide"}`} style={{ animationDelay: ".15s" }}>
           <span className="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold ring-1 ring-emerald-900/15 bg-emerald-900/10 text-emerald-900">
             {badge}
           </span>
@@ -146,40 +157,36 @@ export default function BestPropertiesSection({
           </h2>
         </div>
 
-        {/* Content grid */}
+        {/* Content grid (positions unchanged) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* LEFT: two carousels + stats/video row */}
+          {/* LEFT column */}
           <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <MiniCarousel
-                images={leftCarouselA}
-                start={0}
-                ariaLabel="Left carousel A"
-              />
-              <MiniCarousel
-                images={leftCarouselB}
-                start={1}
-                ariaLabel="Left carousel B"
-              />
+            <div
+              className={`grid grid-cols-1 md:grid-cols-2 gap-6 ${inView ? "anim-fade-up" : "pre-hide"}`}
+              style={{ animationDelay: ".35s" }}
+            >
+              <MiniCarousel images={leftCarouselA} start={0} ariaLabel="Left carousel A" />
+              <MiniCarousel images={leftCarouselB} start={1} ariaLabel="Left carousel B" />
             </div>
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <YearsCard years={years} avatarSrcs={avatars} />
-              <VideoCard thumbnail={videoThumb} href={videoHref} />
+              <div className={`${inView ? "anim-fade-up" : "pre-hide"}`} style={{ animationDelay: ".6s" }}>
+                <YearsCard years={years} avatarSrcs={avatars} />
+              </div>
+              <div className={`${inView ? "anim-fade-up" : "pre-hide"}`} style={{ animationDelay: ".8s" }}>
+                <VideoCard thumbnail={videoThumb} href={videoHref} />
+              </div>
             </div>
           </div>
 
-          {/* RIGHT: featured property big card */}
+          {/* RIGHT column */}
           <div className="relative">
-            <div className="overflow-hidden rounded-2xl">
+            <div
+              className={`overflow-hidden rounded-2xl ${inView ? "anim-slide-r" : "pre-hide"}`}
+              style={{ animationDelay: ".55s" }}
+            >
               <div className="aspect-[16/11] w-full relative">
-                <img
-                  src={featuredImg}
-                  alt={featuredTitle}
-                  className="h-full w-full object-cover"
-                />
-
-                {/* Optional decorative swirl overlay (pass an SVG/PNG path if you have it) */}
+                <img src={featuredImg} alt={featuredTitle} className="h-full w-full object-cover" />
                 {swirlSvg && (
                   <img
                     src={swirlSvg}
@@ -191,28 +198,22 @@ export default function BestPropertiesSection({
               </div>
             </div>
 
-            {/* Info card pinned to bottom-left */}
-            <div className="absolute left-6 right-6 -bottom-6">
+            {/* Info card (same position) */}
+            <div className={`absolute left-6 right-6 -bottom-6 ${inView ? "anim-pop" : "pre-hide"}`} style={{ animationDelay: "1.15s" }}>
               <div className="mx-auto rounded-2xl bg-white shadow-xl ring-1 ring-slate-200 p-4 sm:p-5 flex items-center justify-between gap-4">
                 <div>
-                  <a
-                    href={featuredHref}
-                    className="text-base sm:text-lg font-semibold text-slate-900 hover:underline"
-                  >
+                  <a href={featuredHref} className="text-base sm:text-lg font-semibold text-slate-900 hover:underline">
                     {featuredTitle}
                   </a>
                   <ul className="mt-2 flex items-center flex-wrap gap-3 text-[13px] text-slate-600">
                     <li className="inline-flex items-center gap-1.5">
-                      <LuBedDouble className="w-4 h-4" />
-                      x{featuredBeds}
+                      <LuBedDouble className="w-4 h-4" /> x{featuredBeds}
                     </li>
                     <li className="inline-flex items-center gap-1.5">
-                      <LuBath className="w-4 h-4" />
-                      x{featuredBaths}
+                      <LuBath className="w-4 h-4" /> x{featuredBaths}
                     </li>
                     <li className="inline-flex items-center gap-1.5">
-                      <LuSquare className="w-4 h-4" />
-                      {featuredArea}
+                      <LuSquare className="w-4 h-4" /> {featuredArea}
                     </li>
                   </ul>
                 </div>

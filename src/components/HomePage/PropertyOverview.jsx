@@ -1,9 +1,10 @@
-import React from "react";
+// src/components/PropertyOverview.jsx
+import React, { useEffect, useRef, useState } from "react";
 
 /**
  * Minimal Property Overview
  * Left: single image
- * Right: badge, headline, text, CTA
+ * Right: badge, headline, text, CTA (with scroll animations)
  */
 export default function PropertyOverview({
   img = "/assets/img/all-images/property/property-img5.png",
@@ -14,8 +15,46 @@ export default function PropertyOverview({
   ctaText = "View Our Property",
   ctaHref = "#",
 }) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setVisible(true);
+          else setVisible(false);
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <section className="relative">
+    <section ref={ref} className="relative overflow-hidden">
+      <style>{`
+        @keyframes slideInRight {
+          0% { opacity: 0; transform: translateX(80px); }
+          100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideOutRight {
+          0% { opacity: 1; transform: translateX(0); }
+          100% { opacity: 0; transform: translateX(80px); }
+        }
+        .text-enter {
+          animation: slideInRight 1.2s ease-out forwards;
+        }
+        .text-exit {
+          animation: slideOutRight 0.9s ease-in forwards;
+        }
+      `}</style>
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-y-10 lg:gap-12">
           {/* Left — single image only */}
@@ -29,8 +68,12 @@ export default function PropertyOverview({
             </div>
           </div>
 
-          {/* Right — content */}
-          <div className="lg:col-span-6">
+          {/* Right — content with animation */}
+          <div
+            className={`lg:col-span-6 ${
+              visible ? "text-enter" : "text-exit"
+            }`}
+          >
             {/* Badge */}
             <div className="inline-flex items-center rounded-full bg-emerald-900/10 text-emerald-900 px-4 py-2 text-sm font-semibold ring-1 ring-emerald-900/15">
               {badge.toUpperCase()}

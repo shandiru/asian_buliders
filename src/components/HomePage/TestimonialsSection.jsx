@@ -1,12 +1,11 @@
-import React, { useMemo, useState } from "react";
+// src/components/TestimonialsSection.jsx
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { HiChevronUp, HiChevronDown, HiMiniPlay } from "react-icons/hi2";
 import { FaStar } from "react-icons/fa6";
 
-/* Theme */
 const GOLD = "#DCC16E";
 const GREEN_PILL = "bg-emerald-900/10 ring-emerald-900/15 text-emerald-900";
 
-/* Demo data */
 const DEFAULT_ITEMS = [
   {
     name: "Alexy Queen",
@@ -38,9 +37,14 @@ function Stars({ value = 5 }) {
   );
 }
 
-function Card({ item }) {
+function Card({ item, delay = 0, inView }) {
   return (
-    <div className="rounded-2xl bg-white p-6 sm:p-7 shadow-sm">
+    <div
+      className={`rounded-2xl bg-white p-6 sm:p-7 shadow-sm transition-all duration-1000 ${
+        inView ? "animate-riseIn" : "opacity-0 translate-y-10"
+      }`}
+      style={{ animationDelay: `${delay}s` }}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <img
@@ -79,8 +83,22 @@ export default function TestimonialsSection({
   items = DEFAULT_ITEMS,
 }) {
   const [index, setIndex] = useState(0);
+  const [inView, setInView] = useState(false);
+  const ref = useRef(null);
 
-  // ✅ Ensure we always have at least 2 items to render and cycle.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => setInView(entry.isIntersecting));
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   const safeItems = useMemo(
     () => (items.length >= 2 ? items : [...items, ...items]),
     [items]
@@ -97,11 +115,25 @@ export default function TestimonialsSection({
   const down = () => setIndex((i) => (i + 1) % len);
 
   return (
-    <section className="bg-white">
+    <section ref={ref} className="bg-white relative overflow-hidden">
+      <style>{`
+        @keyframes riseIn {
+          0% { opacity: 0; transform: translateY(40px) scale(.97); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-riseIn {
+          animation: riseIn 1.8s cubic-bezier(.22,.8,.22,1) forwards;
+        }
+      `}</style>
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* LEFT */}
-          <div className="lg:col-span-5">
+          <div
+            className={`lg:col-span-5 transition-all duration-1000 ${
+              inView ? "animate-riseIn" : "opacity-0 translate-y-10"
+            }`}
+          >
             <span
               className={[
                 "inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold ring-1",
@@ -127,7 +159,7 @@ export default function TestimonialsSection({
             {/* Video preview */}
             <div className="mt-12 rounded-2xl overflow-hidden bg-slate-100 relative">
               <img
-                src="testleft.png"
+                src={videoThumb || "testleft.png"}
                 alt="Testimonial video"
                 className="w-full h-auto object-cover"
               />
@@ -142,20 +174,22 @@ export default function TestimonialsSection({
           </div>
 
           {/* RIGHT */}
-          <div className="lg:col-span-7">
+          <div
+            className={`lg:col-span-7 transition-all duration-1000 ${
+              inView ? "animate-riseIn" : "opacity-0 translate-y-10"
+            }`}
+          >
             <div
               className="relative rounded-3xl p-4 sm:p-6"
               style={{ backgroundColor: GOLD }}
             >
-              {/* cards */}
               <div className="space-y-6">
                 {visible.map((it, idx) => (
-                  <Card key={idx + it.name} item={it} />
+                  <Card key={idx + it.name} item={it} delay={idx * 0.4} inView={inView} />
                 ))}
               </div>
 
-              {/* ✅ Controls: visible on ALL screens */}
-              {/* Desktop: vertical on the right (absolute) */}
+              {/* Controls */}
               <div className="hidden sm:flex flex-col gap-3 absolute right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-auto">
                 <button
                   onClick={up}
@@ -173,7 +207,7 @@ export default function TestimonialsSection({
                 </button>
               </div>
 
-              {/* Mobile: horizontal row at the bottom */}
+              {/* Mobile controls */}
               <div className="sm:hidden mt-4 flex justify-center gap-4 z-10">
                 <button
                   onClick={up}
